@@ -25,3 +25,55 @@
 # ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+from logging import basicConfig, DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+from configParser import ConfigParser
+
+
+class Subcommand(object):
+    '''
+    Adds common functionality to subcommands.
+    '''
+    def set_log_level(self, log_level):
+        '''
+        Sets the log level. If None, the log_level will be warning.
+        '''
+        if log_level:
+            levels = {}
+            levels['debug'] = DEBUG
+            levels['info'] = INFO
+            levels['warning'] = WARNING
+            levels['error'] = ERROR
+            levels['critical'] = CRITICAL
+
+            level = levels[log_level.lower()]
+            basicConfig(level=level)
+
+    def parse_config(self, config):
+        '''
+        Parses the configuration file.
+        '''
+        result = ConfigParser()
+        result.read_file(config)
+        return result
+
+    def __call__(self, arguments):
+        '''
+        Called by the main file's callback mechanism. This function sets up
+        the subcommand with logging and configuration and then calls the run
+        function.
+        '''
+        # Setup logging and configuration.
+        self.set_log_level(arguments.log_level)
+        self.config = self.parse_config(arguments.configuration)
+
+        # Run the command.
+        self.run(arguments)
+
+    def run(self, arguments):
+        '''
+        Run the subcommand given the arguments. Inherit and override this
+        this function to implement a subcommand.
+        '''
+        pass

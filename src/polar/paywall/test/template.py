@@ -26,37 +26,10 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from setuptools import setup, find_packages
 
-
-setup(name='polar.paywall.test',
-      version=open('VERSION').read().replace('\n','').strip(),
-      description='A utility to test if a host conforms to the paywall api.',
-      long_description=open('README.md').read(),
-      # Get more strings from
-      # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      classifiers=[
-        'Programming Language :: Python',
-        ],
-      author='Rishi Ramraj',
-      author_email='rishi.ramraj@polarmobile.com',
-      url='http://www.polarmobile.com',
-      license='3-Clause BSD',
-      packages=find_packages('src'),
-      package_dir={'': 'src'},
-      namespace_packages=[
-          'polar',
-          'polar.paywall',
-          ],
-      include_package_data=True,
-      zip_safe=False,
-      install_requires=[
-          'setuptools',
-          'validictory',
-      ],
-      entry_points='''
-      [console_scripts]
-      paywall.test = polar.paywall.test.main:main
-      ''',
-      extras_require={'test': ['mock']}
-      )
+def template(arguments):
+    '''
+    Called by the main command's callback mechanism to print out a sample
+    template for the configuration file.
+    '''
+    print 'Calling tempalte'
