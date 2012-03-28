@@ -31,7 +31,7 @@
 from argparse import ArgumentParser, FileType
 
 # Subcommands.
-from temlate import template
+from polar.paywall.test.template import template
 
 
 def main():
@@ -56,7 +56,9 @@ def get_parser():
 
     # Create the subcommands. Subcommands are mapped to different entry
     # points in the system.
-    create_auth_parser(subparsers)
+    create_template_parser(subparsers)
+
+    return parser
 
 
 def create_configuration_argument(subparser):
@@ -91,13 +93,13 @@ def create_subparser(subparsers, name, help, callback):
     subparser.set_defaults(callback=callback)
 
 
-def create_template(subparsers):
+def create_template_parser(subparsers):
     '''
     A subparser for the "auth" entry point in the paywall proxy.
     '''
     help = ('Prints a sample configuration file. Pipe the results of this '
             'file to save it.')
-    subparser = subparsers.add_parser(name, help=help)
+    subparser = subparsers.add_parser('template', help=help)
 
     # Register a callback that will be called if this subparser is selected.
     subparser.set_defaults(callback=template)
