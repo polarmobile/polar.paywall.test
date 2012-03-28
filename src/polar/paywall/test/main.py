@@ -32,6 +32,7 @@ from argparse import ArgumentParser, FileType
 
 # Subcommands.
 from polar.paywall.test.template import template
+from polar.paywall.test.auth import Auth
 
 
 def main():
@@ -57,6 +58,8 @@ def get_parser():
     # Create the subcommands. Subcommands are mapped to different entry
     # points in the system.
     create_template_parser(subparsers)
+    create_auth_parser(subparsers)
+    create_validate_parser(subparsers)
 
     return parser
 
@@ -109,7 +112,8 @@ def create_auth_parser(subparsers):
     '''
     A subparser for the "auth" entry point in the paywall proxy.
     '''
-    pass
+    help = ('Runs a series of tests against the auth entry point.')
+    create_subparser(subparsers, 'auth', help, Auth())
 
 
 def create_validate_parser(subparsers):

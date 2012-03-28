@@ -26,54 +26,18 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from logging import basicConfig, DEBUG, INFO, WARNING, ERROR, CRITICAL
 
-from ConfigParser import ConfigParser
+from polar.paywall.test.subcommand import Subcommand
+
+from logging import info
 
 
-class Subcommand(object):
+class Auth(Subcommand):
     '''
-    Adds common functionality to subcommands.
+    Called by the auth subcommand in main.
     '''
-    def set_log_level(self, log_level):
-        '''
-        Sets the log level. If None, the log_level will be warning.
-        '''
-        if log_level:
-            levels = {}
-            levels['debug'] = DEBUG
-            levels['info'] = INFO
-            levels['warning'] = WARNING
-            levels['error'] = ERROR
-            levels['critical'] = CRITICAL
-
-            level = levels[log_level.lower()]
-            basicConfig(level=level)
-
-    def parse_config(self, config):
-        '''
-        Parses the configuration file.
-        '''
-        result = ConfigParser()
-        result.readfp(config)
-        return result
-
-    def __call__(self, arguments):
-        '''
-        Called by the main file's callback mechanism. This function sets up
-        the subcommand with logging and configuration and then calls the run
-        function.
-        '''
-        # Setup logging and configuration.
-        self.set_log_level(arguments.logLevel)
-        self.config = self.parse_config(arguments.configuration)
-
-        # Run the command.
-        self.run(arguments)
-
     def run(self, arguments):
         '''
-        Run the subcommand given the arguments. Inherit and override this
-        this function to implement a subcommand.
+        Runs the full series of unit tests on auth.
         '''
-        pass
+        info('Running tests on the auth entry point.')
