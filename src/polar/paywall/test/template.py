@@ -26,10 +26,23 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+TEMPLATE = '''
+# Settings that identify the server you are testing.
+[server]
+address = localhost
+port = 443
+
+# Test user settings. Note that the username and password are arbitrary
+# fields. You can specify any authorization fields you like.
+[user]
+username = user01
+password = test
+'''.strip()
+
 
 def template(arguments):
     '''
     Called by the main command's callback mechanism to print out a sample
     template for the configuration file.
     '''
-    print 'Calling tempalte'
+    print TEMPLATE
