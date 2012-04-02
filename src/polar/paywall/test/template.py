@@ -31,11 +31,21 @@ TEMPLATE = '''
 [server]
 address = localhost
 port = 443
+# The version of the proxy api that the server implements.
+version = v1.0.0
 
-# Test user settings. Note that the username and password are arbitrary
+# Valid user settings. Note that the username and password are arbitrary
 # fields. You can specify any authorization fields you like.
-[user]
+[valid user]
 username = user01
+password = test
+
+# Credentials for a user with an account problem. Their authentication
+# parameteres are valid, but for some reason the account cannot be
+# accessed. Tests that use this parameter will only be run if this
+# section is provided.
+[invalid user]
+username = user02
 password = test
 '''.strip()
 
