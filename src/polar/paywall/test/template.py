@@ -29,8 +29,11 @@
 TEMPLATE = '''
 # Settings that identify the server you are testing.
 [server]
+# Note that the pot number can be included in the address. The protocol should
+# not be specified.
 address = localhost
-port = 443
+# http and https are valid protocols.
+protocol = http
 # The version of the proxy api that the server implements.
 version = v1.0.0
 
@@ -47,6 +50,12 @@ password = test
 [invalid user]
 username = user02
 password = test
+
+# These configurations associate a product name with a user. For testing
+# purposes, only one product is associated with one user.
+[products]
+valid user = product01
+invalid user = product02
 '''.strip()
 
 

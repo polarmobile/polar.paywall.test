@@ -31,6 +31,8 @@ from polar.paywall.test.subcommand import Subcommand
 
 from logging import info
 
+from json import dumps
+
 
 class Auth(Subcommand):
     '''
@@ -41,3 +43,46 @@ class Auth(Subcommand):
         Runs the full series of unit tests on auth.
         '''
         info('Running tests on the auth entry point.')
+
+        connection = self.create_connection()
+
+        print self.get_body()
+        print self.get_url()
+
+        connection.close()
+
+    def get_url(self, api='paywallproxy', version=None, format='json',
+                product=None, user='valid user'):
+        '''
+        Creates a url using the values in the config file.
+        '''
+        if not product:
+            product = self.config.get('products', user)
+
+        if not version:
+            version = self.config.get('server', 'version')
+
+        parameters = {'api': api, 'version': version, 'format': format,
+                      'product': product}
+        return '/{api}/{version}/{format}/auth/{product}'.format(**parameters)
+
+    def get_body(self, user = 'valid user'):
+        '''
+        Get a sample body for auth testing. Possible choices for user are
+        'valid user' and 'invalid user'.
+        '''
+        result = {
+            'device': {
+                'os_version': 'test',
+                'model': 'test',
+                'manufacturer': 'test',
+            },
+            'uid': '3cf2c547313c8297ac726b829d20fb7aae2b1b3e',
+            'authParams': {},
+        }
+
+        # Extract authentication parameters from the configuration file.
+        for option in self.config.options(user):
+            result['authParams'][option] = self.config.get(user, option)
+
+        return result

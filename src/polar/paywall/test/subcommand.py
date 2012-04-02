@@ -26,6 +26,8 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+from httplib import HTTPSConnection, HTTPConnection
+
 from logging import basicConfig, DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 from ConfigParser import ConfigParser
@@ -77,3 +79,13 @@ class Subcommand(object):
         this function to implement a subcommand.
         '''
         pass
+
+    def create_connection(self):
+        '''
+        Creates a connection object using the parameters specified in the
+        config file.
+        '''
+        protocols = {'http':HTTPConnection, 'https': HTTPSConnection}
+        protocol = protocols[self.config.get('server', 'protocol')]
+
+        return protocol(self.config.get('server', 'address'))
