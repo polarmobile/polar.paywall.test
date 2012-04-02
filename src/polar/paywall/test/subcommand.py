@@ -26,11 +26,15 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+from polar.paywall.test.schemas import ERROR_SCHEMAS
+
 from httplib import HTTPSConnection, HTTPConnection
 
 from logging import basicConfig, DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 from ConfigParser import ConfigParser
+
+from validictory import validate
 
 
 class Subcommand(object):
@@ -89,3 +93,16 @@ class Subcommand(object):
         protocol = protocols[self.config.get('server', 'protocol')]
 
         return protocol(self.config.get('server', 'address'))
+
+    def check_error_response(self, body):
+        '''
+        Tests an error response body to see if it conforms to the proper error
+        schema.
+        '''
+        version = self.config.get('server', 'version')
+        schema = ERROR_SCHEMAS[version]
+
+        try:
+            validate(body, schema)
+        except ValueError as exception:
+            warning('Response body does not match the schema: %s' % str(exception))

@@ -27,6 +27,8 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+from polar.paywall.test.exceptions import PaywallTestException
+
 from polar.paywall.test.subcommand import Subcommand
 
 from logging import info, warning
@@ -52,7 +54,8 @@ class Auth(Subcommand):
             print self.request(connection)
 
         except socket.error:
-            warning('Could not connect to server. Check your config.')
+            message = ('Could not connect to server. Check your config.')
+            raise PaywallTestException(message)
 
         connection.close()
 
@@ -124,6 +127,7 @@ class Auth(Subcommand):
 
     def test_urls(self):
         '''
-        Tests the main url with 
+        Tests the main url with bad url parameters.
         '''
-        pass
+        # Test with a bad api.
+        url = 
