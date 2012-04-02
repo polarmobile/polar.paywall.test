@@ -29,9 +29,11 @@
 
 from polar.paywall.test.subcommand import Subcommand
 
-from logging import info
+from logging import info, warning
 
-from json import dumps
+from json import loads, dumps
+
+import socket
 
 
 class Auth(Subcommand):
@@ -46,8 +48,14 @@ class Auth(Subcommand):
 
         connection = self.create_connection()
 
-        print self.get_body()
-        print self.get_url()
+        #print self.get_url()
+        #print self.get_headers()
+        #print self.get_body()
+        try:
+            print self.request(connection)
+
+        except socket.error:
+            warning('Could not connect to server. Check your config.')
 
         connection.close()
 
@@ -66,6 +74,14 @@ class Auth(Subcommand):
                       'product': product}
         return '/{api}/{version}/{format}/auth/{product}'.format(**parameters)
 
+    def get_headers(self, charset = 'utf-8'):
+        '''
+        Creates a set of testing headers.
+        '''
+        return {'Accept': 'application/json',
+                'Accept-Charset': charset,
+                'Authorization': 'PolarPaywallProxyAuthv1.0.0'}
+
     def get_body(self, user = 'valid user'):
         '''
         Get a sample body for auth testing. Possible choices for user are
@@ -77,7 +93,6 @@ class Auth(Subcommand):
                 'model': 'test',
                 'manufacturer': 'test',
             },
-            'uid': '3cf2c547313c8297ac726b829d20fb7aae2b1b3e',
             'authParams': {},
         }
 
@@ -86,3 +101,26 @@ class Auth(Subcommand):
             result['authParams'][option] = self.config.get(user, option)
 
         return result
+
+    def request(self, connection, url=None, headers=None, body=None):
+        '''
+        Issue a request. If url, headers or body are None, then the default
+        factory methods are used.
+        '''
+        if not url:
+            url = self.get_url()
+
+        if not headers:
+            headers = self.get_headers()
+
+        if not body:
+            body = dumps(self.get_body())
+
+        connection.request('POST', url, body, headers)
+        response = connection.getresponse()
+
+        status = response.status
+        headers = response.msg
+        body = response.read()
+
+        return (status, headers, body)
