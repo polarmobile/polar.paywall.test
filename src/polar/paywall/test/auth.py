@@ -48,9 +48,6 @@ class Auth(Subcommand):
 
         connection = self.create_connection()
 
-        #print self.get_url()
-        #print self.get_headers()
-        #print self.get_body()
         try:
             print self.request(connection)
 
@@ -124,3 +121,9 @@ class Auth(Subcommand):
         body = response.read()
 
         return (status, headers, body)
+
+    def test_urls(self):
+        '''
+        Tests the main url with 
+        '''
+        pass
