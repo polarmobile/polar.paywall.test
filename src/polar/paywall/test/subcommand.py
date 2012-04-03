@@ -31,7 +31,7 @@ from polar.paywall.test.schemas import ERROR_SCHEMAS
 from httplib import HTTPSConnection, HTTPConnection
 
 from logging import (basicConfig, DEBUG, INFO, WARNING, ERROR, CRITICAL,
-    warning)
+    info, warning)
 
 from ConfigParser import ConfigParser
 
@@ -39,6 +39,10 @@ from validictory import validate
 
 # Used to generate random strings for testing.
 from uuid import uuid4
+
+from json import loads, dumps
+
+from random import randint
 
 
 class Subcommand(object):
@@ -204,9 +208,6 @@ class Subcommand(object):
         url = self.get_url(version=self.make_random_version())
         self.test_url(connection, url, 404, 'InvalidVersion')
 
-    def test_success(self, connection):
-        '''
-        Test a successful request/response.
-        '''
-        info('Testing a successful authentication.')
-        self.request(connection, schemas=AUTH_SCHEMAS)
+        info('Testing an invalid format.')
+        url = self.get_url(format='test')
+        self.test_url(connection, url, 404, 'InvalidFormat')

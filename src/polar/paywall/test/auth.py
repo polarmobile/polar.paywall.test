@@ -32,11 +32,7 @@ from polar.paywall.test.subcommand import Subcommand
 
 from logging import info, warning, error
 
-from json import loads, dumps
-
 import socket
-
-from random import randint
 
 
 class Auth(Subcommand):
@@ -107,3 +103,10 @@ class Auth(Subcommand):
             result['authParams'][option] = self.config.get(user, option)
 
         return result
+
+    def test_success(self, connection):
+        '''
+        Test a successful request/response.
+        '''
+        info('Testing a successful authentication.')
+        self.request(connection, schemas=AUTH_SCHEMAS)
