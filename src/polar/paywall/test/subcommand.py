@@ -37,6 +37,9 @@ from ConfigParser import ConfigParser
 
 from validictory import validate
 
+# Used to generate random strings for testing.
+from uuid import uuid4
+
 
 class Subcommand(object):
     '''
@@ -120,15 +123,90 @@ class Subcommand(object):
         if 'application/json' not in content_type:
             warning('The content type is not json: %s.' % content_type)
 
-    def status_warning(self, test, status):
+    def random_id(self):
         '''
-        A helper function for reporting a bad status warning.
+        Generates a random unique id.
         '''
-        warning('Wrong status received when testing %s: %s.' % (test, status))
+        return str(uuid4()).replace('-','')
 
-    def code_warning(self, test, code):
+    def request(self, connection, url=None, headers=None, body=None,
+                schemas=ERROR_SCHEMAS):
         '''
-        A helper function to print a bad error code warning.
+        Issue a request. If url, headers or body are None, then the default
+        factory methods are used.
         '''
-        warning('Wrong error code received when testing %s: %s.' % \
-                (test, status))
+        if not url:
+            url = self.get_url()
+
+        if not headers:
+            headers = self.get_headers()
+
+        if not body:
+            body = dumps(self.get_body())
+
+        # Make the request.
+        connection.request('POST', url, body, headers)
+        response = connection.getresponse()
+        status = response.status
+
+        # Check the headers 
+        headers = response.msg
+        self.check_headers(headers)
+
+        # Check the body.
+        try:
+            body = loads(response.read())
+        except ValueError as exception:
+            error('Could not decode response: %s' % str(exception))
+
+        self.check_response(body, schemas)
+
+        return (status, headers, body)
+
+    def test_url(self, connection, url, expected_status, expected_code):
+        '''
+        Tests for processing of an invalid url.
+        '''
+        status, headers, body = self.request(connection, url=url)
+
+        if status != expected_status:
+            warning('The request to %s returned status %s and not %s' % \
+                    (url, status, expected_status))
+
+        if body['error']['code'] != expected_code:
+            warning('The request to %s returned code %s and not %s' % \
+                    (url, body['error']['code'], expected_code))
+
+    def make_random_version(self):
+        '''
+        Creates a random version and tests to see if it is not the current
+        version.
+        '''
+        server_version = self.config.get('server','version')
+        version = server_version
+        while version == server_version:
+            version = 'v%i.%i.%i' % (randint(0,9), randint(0,9), randint(0,9))
+        return version
+
+    def test_urls(self, connection):
+        '''
+        Tests the main url with bad url parameters.
+        '''
+        info('Testing an invalid api.')
+        url = self.get_url(api='test')
+        self.test_url(connection, url, 404, 'InvalidAPI')
+
+        info('Testing an invalid version.')
+        url = self.get_url(version=self.make_random_version())
+        self.test_url(connection, url, 404, 'InvalidVersion')
+
+        info('Testing an invalid version.')
+        url = self.get_url(version=self.make_random_version())
+        self.test_url(connection, url, 404, 'InvalidVersion')
+
+    def test_success(self, connection):
+        '''
+        Test a successful request/response.
+        '''
+        info('Testing a successful authentication.')
+        self.request(connection, schemas=AUTH_SCHEMAS)

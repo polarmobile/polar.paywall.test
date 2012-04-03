@@ -34,12 +34,17 @@ from argparse import ArgumentParser, FileType
 from polar.paywall.test.template import template
 from polar.paywall.test.auth import Auth
 
+# A number of the commands in this module use random functionality.
+from random import seed
+
 
 def main():
     '''
     Main entry point for the utility. It parses sys.argv and calls the
     selected function.
     '''
+    seed()
+
     parser = get_parser()
     arguments = parser.parse_args()
     arguments.callback(arguments)

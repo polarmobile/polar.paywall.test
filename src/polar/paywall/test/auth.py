@@ -36,6 +36,8 @@ from json import loads, dumps
 
 import socket
 
+from random import randint
+
 
 class Auth(Subcommand):
     '''
@@ -49,8 +51,8 @@ class Auth(Subcommand):
 
         connection = self.create_connection()
 
-        #    self.test_urls,
         tests = [
+            self.test_urls,
             self.test_success,
         ]
 
@@ -105,57 +107,3 @@ class Auth(Subcommand):
             result['authParams'][option] = self.config.get(user, option)
 
         return result
-
-    def request(self, connection, url=None, headers=None, body=None,
-                schemas=ERROR_SCHEMAS):
-        '''
-        Issue a request. If url, headers or body are None, then the default
-        factory methods are used.
-        '''
-        if not url:
-            url = self.get_url()
-
-        if not headers:
-            headers = self.get_headers()
-
-        if not body:
-            body = dumps(self.get_body())
-
-        # Make the request.
-        connection.request('POST', url, body, headers)
-        response = connection.getresponse()
-        status = response.status
-
-        # Check the headers 
-        headers = response.msg
-        self.check_headers(headers)
-
-        # Check the body.
-        try:
-            body = loads(response.read())
-        except ValueError as exception:
-            error('Could not decode response: %s' % str(exception))
-
-        self.check_response(body, schemas)
-
-        return (status, headers, body)
-
-    def test_urls(self, connection):
-        '''
-        Tests the main url with bad url parameters.
-        '''
-        info('Testing an invalid api.')
-        url = self.get_url(api='test')
-        status, headers, body = self.request(connection, url=url)
-        if status != 404:
-            warning('The invalid api request did not return a 404: %s' % \
-                    str(status))
-
-        print body
-
-    def test_success(self, connection):
-        '''
-        Test a successful request/response.
-        '''
-        info('Testing a successful authentication.')
-        self.request(connection, schemas=AUTH_SCHEMAS)
