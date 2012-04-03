@@ -26,19 +26,6 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# A global set of dictionary of json schemas.
-AUTH_SCHEMAS = {
-    'v1.0.0': V1_0_0_AUTH_SCHEMA,
-}
-
-VALIDATE_SCHEMAS = {
-    'v1.0.0': V1_0_0_VALIDATE_SCHEMA,
-}
-
-ERROR_SCHEMAS = {
-    'v1.0.0': V1_0_0_ERROR_SCHEMA,
-}
-
 V1_0_0_AUTH_SCHEMA = {
     "type": "object",
     "required": True,
@@ -94,3 +81,17 @@ V1_0_0_ERROR_SCHEMA = {
         }
     }
 }
+
+# A global set of dictionary of json schemas.
+AUTH_SCHEMAS = {
+    'v1.0.0': V1_0_0_AUTH_SCHEMA,
+}
+
+VALIDATE_SCHEMAS = {
+    'v1.0.0': V1_0_0_VALIDATE_SCHEMA,
+}
+
+ERROR_SCHEMAS = {
+    'v1.0.0': V1_0_0_ERROR_SCHEMA,
+}
+

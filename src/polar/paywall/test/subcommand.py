@@ -30,7 +30,8 @@ from polar.paywall.test.schemas import ERROR_SCHEMAS
 
 from httplib import HTTPSConnection, HTTPConnection
 
-from logging import basicConfig, DEBUG, INFO, WARNING, ERROR, CRITICAL
+from logging import (basicConfig, DEBUG, INFO, WARNING, ERROR, CRITICAL,
+    warning)
 
 from ConfigParser import ConfigParser
 
@@ -94,15 +95,40 @@ class Subcommand(object):
 
         return protocol(self.config.get('server', 'address'))
 
-    def check_error_response(self, body):
+    def check_response(self, body, schemas = ERROR_SCHEMAS):
         '''
         Tests an error response body to see if it conforms to the proper error
         schema.
         '''
         version = self.config.get('server', 'version')
-        schema = ERROR_SCHEMAS[version]
+        schema = schemas[version]
 
         try:
             validate(body, schema)
         except ValueError as exception:
-            warning('Response body does not match the schema: %s' % str(exception))
+            warning('Response body does not match the schema: %s.' % str(exception))
+
+    def check_headers(self, headers):
+        '''
+        Tests the headers to ensure that the content type is json.
+        '''
+        if 'Content-Type' not in headers:
+            warning('The content type is not in the response.')
+            return
+
+        content_type = headers['Content-Type']
+        if 'application/json' not in content_type:
+            warning('The content type is not json: %s.' % content_type)
+
+    def status_warning(self, test, status):
+        '''
+        A helper function for reporting a bad status warning.
+        '''
+        warning('Wrong status received when testing %s: %s.' % (test, status))
+
+    def code_warning(self, test, code):
+        '''
+        A helper function to print a bad error code warning.
+        '''
+        warning('Wrong error code received when testing %s: %s.' % \
+                (test, status))

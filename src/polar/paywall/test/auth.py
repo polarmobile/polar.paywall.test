@@ -26,12 +26,11 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-from polar.paywall.test.exceptions import PaywallTestException
+from polar.paywall.test.schemas import AUTH_SCHEMAS, ERROR_SCHEMAS
 
 from polar.paywall.test.subcommand import Subcommand
 
-from logging import info, warning
+from logging import info, warning, error
 
 from json import loads, dumps
 
@@ -50,12 +49,17 @@ class Auth(Subcommand):
 
         connection = self.create_connection()
 
+        #    self.test_urls,
+        tests = [
+            self.test_success,
+        ]
+
         try:
-            print self.request(connection)
+            for test in tests:
+                test(connection)
 
         except socket.error:
-            message = ('Could not connect to server. Check your config.')
-            raise PaywallTestException(message)
+            error('Could not connect to server. Check your config.')
 
         connection.close()
 
@@ -102,7 +106,8 @@ class Auth(Subcommand):
 
         return result
 
-    def request(self, connection, url=None, headers=None, body=None):
+    def request(self, connection, url=None, headers=None, body=None,
+                schemas=ERROR_SCHEMAS):
         '''
         Issue a request. If url, headers or body are None, then the default
         factory methods are used.
@@ -116,18 +121,41 @@ class Auth(Subcommand):
         if not body:
             body = dumps(self.get_body())
 
+        # Make the request.
         connection.request('POST', url, body, headers)
         response = connection.getresponse()
-
         status = response.status
+
+        # Check the headers 
         headers = response.msg
-        body = response.read()
+        self.check_headers(headers)
+
+        # Check the body.
+        try:
+            body = loads(response.read())
+        except ValueError as exception:
+            error('Could not decode response: %s' % str(exception))
+
+        self.check_response(body, schemas)
 
         return (status, headers, body)
 
-    def test_urls(self):
+    def test_urls(self, connection):
         '''
         Tests the main url with bad url parameters.
         '''
-        # Test with a bad api.
-        url = 
+        info('Testing an invalid api.')
+        url = self.get_url(api='test')
+        status, headers, body = self.request(connection, url=url)
+        if status != 404:
+            warning('The invalid api request did not return a 404: %s' % \
+                    str(status))
+
+        print body
+
+    def test_success(self, connection):
+        '''
+        Test a successful request/response.
+        '''
+        info('Testing a successful authentication.')
+        self.request(connection, schemas=AUTH_SCHEMAS)
