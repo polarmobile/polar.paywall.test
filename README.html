@@ -87,64 +87,71 @@ cannot be tested and they are noted.</p>
 
 <p>The following tests are run on the auth entry point.</p>
 
-<h4>url</h4>
+<h4>URL</h4>
 
-<ul>
-<li><p>Proper API:</p>
+<h5>Proper API:</h5>
 
 <ul>
 <li>Correct Value: paywallproxy</li>
 <li>Expected Result: InvalidAPI 404</li>
-</ul></li>
-<li><p>Correct Version:</p>
+</ul>
+
+<h5>Correct Version:</h5>
 
 <ul>
 <li>Correct Value: v1.0.0</li>
 <li>Expected Result: InvalidVersion 404</li>
-</ul></li>
-<li><p>Correct Format:</p>
+</ul>
+
+<h5>Correct Format:</h5>
 
 <ul>
 <li>Correct Value: json</li>
 <li>Expected Result: InvalidFormat 404</li>
-</ul></li>
 </ul>
 
-<h4>headers</h4>
+<h4>Headers</h4>
+
+<h5>Authorization:</h5>
 
 <ul>
-<li>Authorization:
+<li>Tests:
 <ul>
-<li>Tests:</li>
 <li>No header.</li>
 <li>No token.</li>
 <li>Token incorrect.</li>
+</ul></li>
 <li>Correct Value: PolarPaywallProxyAuthv1.0.0</li>
 <li>result = InvalidAuthScheme 400</li>
-</ul></li>
 </ul>
 
-<h4>body</h4>
+<h4>Body</h4>
+
+<h5>Charset</h5>
 
 <ul>
-<li><p>Charset</p>
-
+<li>Tests:
 <ul>
-<li>Tests:</li>
 <li>Non-utf8 encoded values.</li>
+</ul></li>
 <li>Expected Result: InternalError 500</li>
-</ul></li>
-<li><p>Json Encoding</p>
+</ul>
+
+<h5>Json Encoding</h5>
 
 <ul>
-<li>Tests:</li>
+<li>Tests:
+<ul>
 <li>Correct number of parameters.</li>
-<li>Expected Result: InvalidFormat 400</li>
 </ul></li>
-<li><p>device:</p>
+<li>Expected Result: InvalidFormat 400</li>
+</ul>
+
+<h5>device:</h5>
 
 <ul>
-<li>Tests:</li>
+<li>Tests:
+<ul>
 <li>device not in body.</li>
 <li>Is an object.</li>
 <li>manufacturer not in device.</li>
@@ -153,114 +160,122 @@ cannot be tested and they are noted.</p>
 <li>model not a string.</li>
 <li>os_version not in device.</li>
 <li>os_version not a string.</li>
+</ul></li>
 <li>Expected Result: InvalidDevice 400</li>
-</ul></li>
-<li><p>auth_params</p>
-
-<ul>
-<li>Tests:</li>
-<li>Not an object.</li>
-<li>Values not strings.</li>
-<li>Expected Result: InvalidAuthParams 400 </li>
-</ul></li>
 </ul>
 
-<h4>model</h4>
+<h5>auth_params</h5>
 
 <ul>
-<li><p>Invalid username</p>
+<li>Tests:
+<ul>
+<li>Not an object.</li>
+<li>Values not strings.</li>
+</ul></li>
+<li>Expected Result: InvalidAuthParams 400 </li>
+</ul>
+
+<h4>Model</h4>
+
+<h5>Invalid username</h5>
 
 <ul>
 <li>Expected Result: InvalidPaywallCredentials 401</li>
-</ul></li>
-<li><p>invalid password</p>
+</ul>
+
+<h5>Invalid password</h5>
 
 <ul>
 <li>Expected Result: InvalidPaywallCredentials 401</li>
-</ul></li>
-<li><p>invalid account</p>
+</ul>
+
+<h5>Invalid account</h5>
 
 <ul>
 <li>Expected Result: AccountProblem 403</li>
-</ul></li>
-<li><p>invalid product </p>
+</ul>
+
+<h5>Invalid product</h5>
 
 <ul>
 <li>Expected Result: InvalidProduct 404</li>
-</ul></li>
 </ul>
 
 <h3>session</h3>
 
-<h4>url</h4>
+<h4>URL</h4>
 
-<ul>
-<li><p>Proper API:</p>
+<h5>Proper API:</h5>
 
 <ul>
 <li>Correct Value: paywallproxy</li>
 <li>Expected Result: InvalidAPI 404</li>
-</ul></li>
-<li><p>Correct Version:</p>
+</ul>
+
+<h5>Correct Version:</h5>
 
 <ul>
 <li>Correct Value: v1.0.0</li>
 <li>Expected Result: InvalidVersion 404</li>
-</ul></li>
-<li><p>Correct Format:</p>
+</ul>
+
+<h5>Correct Format:</h5>
 
 <ul>
 <li>Correct Value: json</li>
 <li>Expected Result: InvalidFormat 404</li>
-</ul></li>
 </ul>
 
-<h4>headers</h4>
+<h4>Headers</h4>
+
+<h5>Authorization:</h5>
 
 <ul>
-<li>Authorization:
+<li>Tests:
 <ul>
-<li>Tests:</li>
 <li>No header.</li>
 <li>No token.</li>
 <li>Token incorrect.</li>
+</ul></li>
 <li>Correct Value: PolarPaywallProxySessionv1.0.0 session:<session id></li>
 <li>result = InvalidAuthScheme 400</li>
-</ul></li>
 </ul>
 
-<h4>body</h4>
+<h4>Body</h4>
 
 <ul>
-<li>body
+<li>Tests:
 <ul>
-<li>Tests:</li>
 <li>Providing a body.</li>
+</ul></li>
 <li>Correct Value: No body.</li>
 <li>Expected Result: InternalError 500</li>
-</ul></li>
 </ul>
 
-<h4>model</h4>
+<h4>Model</h4>
+
+<h5>Invalid Account</h5>
 
 <ul>
-<li><p>invalid account</p>
-
+<li>Cannot be tested.
 <ul>
-<li>Cannot be tested.</li>
 <li>Invalid accounts cannot authenticate, so the test will never have a valid session id.</li>
-<li>Expected Result: AccountProblem 403</li>
 </ul></li>
-<li><p>invalid product </p>
+<li>Expected Result: AccountProblem 403</li>
+</ul>
+
+<h5>Invalid Product</h5>
 
 <ul>
 <li>Expected Result: InvalidProduct 404</li>
-</ul></li>
-<li><p>expired session</p>
+</ul>
+
+<h5>Expired Session</h5>
 
 <ul>
-<li>Cannot be tested.</li>
+<li>Cannot be tested.
+<ul>
 <li>Timeout values may be very long, so waiting isn't an option.</li>
-<li>Expected Result: SessionExpired 401</li>
 </ul></li>
+<li>Expected Result: SessionExpired 401</li>
 </ul>
