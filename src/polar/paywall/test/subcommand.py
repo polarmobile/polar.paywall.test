@@ -139,13 +139,13 @@ class Subcommand(object):
         Issue a request. If url, headers or body are None, then the default
         factory methods are used.
         '''
-        if not url:
+        if url == None:
             url = self.get_url()
 
-        if not headers:
+        if headers == None:
             headers = self.get_headers()
 
-        if not body:
+        if body == None:
             body = self.get_body()
         body = dumps(body, ensure_ascii=False).encode('utf-8')
 
@@ -166,24 +166,26 @@ class Subcommand(object):
 
         self.check_response(body, schemas)
 
-        return (status, headers, body)
+        return (url, status, headers, body)
 
     def test_error(self, connection, expected_status, expected_code,
                    url=None, headers=None, body=None, schemas=ERROR_SCHEMAS):
         '''
         Makes a request to check for an error.
         '''
-        status, headers, body = self.request(connection, url, headers, body, schemas)
+        response = self.request(connection, url, headers, body, schemas)
+        url, status, response_headers, response_body = response
 
         if status != expected_status:
             warning('The request to %s returned status %s and not %s' % \
                     (url, status, expected_status))
-            info(body)
+            info(response_body)
 
-        if body['error']['code'] != expected_code:
+        code = response_body['error']['code']
+        if code != expected_code:
             warning('The request to %s returned code %s and not %s' % \
-                    (url, body['error']['code'], expected_code))
-            info(body)
+                    (url, code, expected_code))
+            info(response_body)
 
     def make_random_version(self):
         '''

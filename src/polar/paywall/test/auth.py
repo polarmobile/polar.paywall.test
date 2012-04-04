@@ -50,6 +50,9 @@ class Auth(Subcommand):
         tests = [
             self.test_urls,
             self.test_headers,
+            self.test_json,
+
+
             self.test_charset,
             self.test_success,
         ]
@@ -131,7 +134,7 @@ class Auth(Subcommand):
         '''
         info('Testing no body.')
         body = ''
-        self.test_error(connection, 400, 'InvalidBody', body=body)
+        self.test_error(connection, 400, 'InvalidFormat', body=body)
 
     def test_charset(self, connection):
         '''
