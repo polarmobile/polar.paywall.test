@@ -35,12 +35,18 @@ from logging import (basicConfig, DEBUG, INFO, WARNING, ERROR, CRITICAL,
 
 from ConfigParser import ConfigParser
 
-from validictory import validate
+from jsonschema import validate
 
 # Used to generate random strings for testing.
 from uuid import uuid4
 
-from json import loads, dumps
+# Used to decode and encode post bodies that contain json encoded data.
+# Note that in python 2.5 and 2.6 the json module is called simplejson.
+# In Python 2.7 and onwards, json is used.
+try:
+    from json import dumps
+except ImportError:
+    from simplejson import dumps
 
 from random import randint
 

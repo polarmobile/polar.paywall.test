@@ -52,7 +52,8 @@ setup(name='polar.paywall.test',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'validictory',
+          'jsonschema',
+          'argparse',
       ],
       entry_points='''
       [console_scripts]

@@ -5,7 +5,21 @@ incompatabilities with the supplied version number.
 
 ## Installation ##
 
+In order to use this tool you will first need to first install python2.5, 2.6
+or 2.7. You then need to install setuptools for your respective version of
+python.
+
+Once these packages are installed, run the setup.py command:
+
+    python setup.py install
+
+This command will install the source and binaries required to run the tool.
+
 ## Usage ##
+
+### Windows ###
+
+### Linux / Mac ###
 
 ## Coverage ##
 
