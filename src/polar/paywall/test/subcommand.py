@@ -133,7 +133,7 @@ class Subcommand(object):
 
         try:
             validate(body, schema)
-        except ValueError as exception:
+        except ValueError, exception:
             warning('Response body does not match the schema: %s.' % str(exception))
             info(body)
 
@@ -187,7 +187,7 @@ class Subcommand(object):
         # Check the body.
         try:
             body = loads(response.read())
-        except ValueError as exception:
+        except ValueError, exception:
             error('Could not decode response: %s' % str(exception))
 
         self.check_response(body, schemas)

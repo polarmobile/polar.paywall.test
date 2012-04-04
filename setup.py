@@ -54,6 +54,7 @@ setup(name='polar.paywall.test',
           'setuptools',
           'jsonschema',
           'argparse',
+          'simplejson',
       ],
       entry_points='''
       [console_scripts]
