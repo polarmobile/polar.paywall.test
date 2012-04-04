@@ -125,6 +125,14 @@ class Auth(Subcommand):
         headers['Authorization'] = self.random_id()
         self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
 
+    def test_json(self, connection):
+        '''
+        Test responses to bad json encoded resquests.
+        '''
+        info('Testing no body.')
+        body = ''
+        self.test_error(connection, 400, 'InvalidBody', body=body)
+
     def test_charset(self, connection):
         '''
         Test authentication using non-ascii characters.
