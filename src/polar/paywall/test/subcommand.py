@@ -103,7 +103,7 @@ class Subcommand(object):
         Creates a connection object using the parameters specified in the
         config file.
         '''
-        protocols = {'http':HTTPConnection, 'https': HTTPSConnection}
+        protocols = {'http': HTTPConnection, 'https': HTTPSConnection}
         protocol = protocols[self.config.get('server', 'protocol')]
 
         return protocol(self.config.get('server', 'address'))
@@ -123,7 +123,7 @@ class Subcommand(object):
         params = (api, version, format, entry, product)
         return '/%s/%s/%s/%s/%s' % params
 
-    def check_response(self, body, schemas = ERROR_SCHEMAS):
+    def check_response(self, body, schemas=ERROR_SCHEMAS):
         '''
         Tests an error response body to see if it conforms to the proper error
         schema.
@@ -134,7 +134,8 @@ class Subcommand(object):
         try:
             validate(body, schema)
         except ValueError, exception:
-            warning('Response body does not match the schema: %s.' % str(exception))
+            warning('Response body does not match the schema: %s.' % \
+                    str(exception))
             info(body)
 
     def check_headers(self, headers):
@@ -153,7 +154,7 @@ class Subcommand(object):
         '''
         Generates a random unique id.
         '''
-        return str(uuid4()).replace('-','')
+        return str(uuid4()).replace('-', '')
 
     def request(self, connection, url=None, headers=None, body=None,
                 schemas=ERROR_SCHEMAS):
@@ -180,7 +181,7 @@ class Subcommand(object):
         response = connection.getresponse()
         status = response.status
 
-        # Check the headers 
+        # Check the headers.
         headers = response.msg
         self.check_headers(headers)
 
@@ -218,10 +219,13 @@ class Subcommand(object):
         Creates a random version and tests to see if it is not the current
         version.
         '''
-        server_version = self.config.get('server','version')
+        server_version = self.config.get('server', 'version')
         version = server_version
         while version == server_version:
-            version = 'v%i.%i.%i' % (randint(0,9), randint(0,9), randint(0,9))
+            major = randint(0, 9)
+            minor = randint(0, 9)
+            patch = randint(0, 9)
+            version = 'v%i.%i.%i' % (major, minor, patch)
         return version
 
     def test_urls(self, connection):

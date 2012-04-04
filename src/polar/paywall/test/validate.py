@@ -93,7 +93,7 @@ class Validate(Subcommand):
         return Subcommand.get_url(self, entry=entry, api=api, version=version,
                                   format=format, product=product, user=user)
 
-    def get_headers(self, charset = 'utf-8'):
+    def get_headers(self, charset='utf-8'):
         '''
         Creates a set of testing headers.
         '''
@@ -103,7 +103,7 @@ class Validate(Subcommand):
                 'Accept-Charset': charset,
                 'Authorization': token}
 
-    def get_body(self, user = 'valid user'):
+    def get_body(self, user='valid user'):
         '''
         This entry point supports no body.
         '''

@@ -75,7 +75,7 @@ class Auth(Subcommand):
         return Subcommand.get_url(self, entry='auth', api=api, version=version,
                                   format=format, product=product, user=user)
 
-    def get_headers(self, charset = 'utf-8'):
+    def get_headers(self, charset='utf-8'):
         '''
         Creates a set of testing headers.
         '''
@@ -83,7 +83,7 @@ class Auth(Subcommand):
                 'Accept-Charset': charset,
                 'Authorization': 'PolarPaywallProxyAuthv1.0.0'}
 
-    def get_body(self, user = 'valid user'):
+    def get_body(self, user='valid user'):
         '''
         Get a sample body for auth testing. Possible choices for user are
         'valid user' and 'invalid user'.
