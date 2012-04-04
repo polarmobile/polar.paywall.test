@@ -33,6 +33,7 @@ from argparse import ArgumentParser, FileType
 # Subcommands.
 from polar.paywall.test.template import template
 from polar.paywall.test.auth import Auth
+from polar.paywall.test.validate import Validate
 
 # A number of the commands in this module use random functionality.
 from random import seed
@@ -125,7 +126,8 @@ def create_validate_parser(subparsers):
     '''
     A subparser for the "validate" entry point in the paywall proxy.
     '''
-    pass
+    help = ('Runs a series of tests against the validate entry point.')
+    create_subparser(subparsers, 'validate', help, Validate())
 
 
 # If the script is called directly, call the main application.

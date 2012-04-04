@@ -102,6 +102,21 @@ class Subcommand(object):
 
         return protocol(self.config.get('server', 'address'))
 
+    def get_url(self, entry, api='paywallproxy', version=None, format='json',
+                product=None, user='valid user'):
+        '''
+        Creates a url using the values in the config file.
+        '''
+        if not product:
+            product = self.config.get('products', user)
+
+        if not version:
+            version = self.config.get('server', 'version')
+
+        params = {'entry': entry, 'api': api, 'version': version,
+                  'format': format, 'product': product}
+        return '/{api}/{version}/{format}/{entry}/{product}'.format(**params)
+
     def check_response(self, body, schemas = ERROR_SCHEMAS):
         '''
         Tests an error response body to see if it conforms to the proper error
@@ -114,6 +129,7 @@ class Subcommand(object):
             validate(body, schema)
         except ValueError as exception:
             warning('Response body does not match the schema: %s.' % str(exception))
+            info(body)
 
     def check_headers(self, headers):
         '''
@@ -147,7 +163,11 @@ class Subcommand(object):
 
         if body == None:
             body = self.get_body()
-        body = dumps(body, ensure_ascii=False).encode('utf-8')
+
+        # Encode the body using json. If a string is given, assume that it is
+        # intended to be the body.
+        if not isinstance(body, unicode) and not isinstance(body, str):
+            body = dumps(body, ensure_ascii=False).encode('utf-8')
 
         # Make the request.
         connection.request('POST', url, body, headers)
@@ -213,3 +233,22 @@ class Subcommand(object):
         info('Testing an invalid format.')
         url = self.get_url(format='test')
         self.test_error(connection, 404, 'InvalidFormat', url=url)
+
+    def test_headers(self, connection):
+        '''
+        Tests the servers response to invalid headers.
+        '''
+        info('Testing no auth header.')
+        headers = self.get_headers()
+        del headers['Authorization']
+        self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
+
+        info('Testing no auth token.')
+        headers = self.get_headers()
+        headers['Authorization'] = ''
+        self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
+
+        info('Testing invalid auth token.')
+        headers = self.get_headers()
+        headers['Authorization'] = self.random_id()
+        self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)

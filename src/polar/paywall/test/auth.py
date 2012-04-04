@@ -72,15 +72,8 @@ class Auth(Subcommand):
         '''
         Creates a url using the values in the config file.
         '''
-        if not product:
-            product = self.config.get('products', user)
-
-        if not version:
-            version = self.config.get('server', 'version')
-
-        parameters = {'api': api, 'version': version, 'format': format,
-                      'product': product}
-        return '/{api}/{version}/{format}/auth/{product}'.format(**parameters)
+        return Subcommand.get_url(self, entry='auth', api=api, version=version,
+                                  format=format, product=product, user=user)
 
     def get_headers(self, charset = 'utf-8'):
         '''
@@ -109,25 +102,6 @@ class Auth(Subcommand):
             result['authParams'][option] = self.config.get(user, option)
 
         return result
-
-    def test_headers(self, connection):
-        '''
-        Tests the servers response to invalid headers.
-        '''
-        info('Testing no auth header.')
-        headers = self.get_headers()
-        del headers['Authorization']
-        self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
-
-        info('Testing no auth token.')
-        headers = self.get_headers()
-        headers['Authorization'] = ''
-        self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
-
-        info('Testing invalid auth token.')
-        headers = self.get_headers()
-        headers['Authorization'] = self.random_id()
-        self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
 
     def test_json(self, connection):
         '''
