@@ -30,7 +30,7 @@ from polar.paywall.test.schemas import AUTH_SCHEMAS, ERROR_SCHEMAS
 
 from polar.paywall.test.subcommand import Subcommand
 
-from logging import info, warning, error
+from logging import info, error
 
 import socket
 
@@ -50,6 +50,7 @@ class Auth(Subcommand):
         tests = [
             self.test_urls,
             self.test_success,
+            self.test_headers,
         ]
 
         try:
@@ -103,6 +104,25 @@ class Auth(Subcommand):
             result['authParams'][option] = self.config.get(user, option)
 
         return result
+
+    def test_headers(self, connection):
+        '''
+        Tests the servers response to invalid headers.
+        '''
+        info('Testing no auth header.')
+        headers = self.get_headers()
+        del headers['Authorization']
+        self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
+
+        info('Testing no auth token.')
+        headers = self.get_headers()
+        headers['Authorization'] = ''
+        self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
+
+        info('Testing invalid auth token.')
+        headers = self.get_headers()
+        headers['Authorization'] = self.random_id()
+        self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
 
     def test_success(self, connection):
         '''

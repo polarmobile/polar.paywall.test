@@ -167,19 +167,22 @@ class Subcommand(object):
 
         return (status, headers, body)
 
-    def test_url(self, connection, url, expected_status, expected_code):
+    def test_error(self, connection, expected_status, expected_code,
+                   url=None, headers=None, body=None, schemas=ERROR_SCHEMAS):
         '''
-        Tests for processing of an invalid url.
+        Makes a request to check for an error.
         '''
-        status, headers, body = self.request(connection, url=url)
+        status, headers, body = self.request(connection, url, headers, body, schemas)
 
         if status != expected_status:
             warning('The request to %s returned status %s and not %s' % \
                     (url, status, expected_status))
+            info(body)
 
         if body['error']['code'] != expected_code:
             warning('The request to %s returned code %s and not %s' % \
                     (url, body['error']['code'], expected_code))
+            info(body)
 
     def make_random_version(self):
         '''
@@ -198,16 +201,12 @@ class Subcommand(object):
         '''
         info('Testing an invalid api.')
         url = self.get_url(api='test')
-        self.test_url(connection, url, 404, 'InvalidAPI')
+        self.test_error(connection, 404, 'InvalidAPI', url=url)
 
         info('Testing an invalid version.')
         url = self.get_url(version=self.make_random_version())
-        self.test_url(connection, url, 404, 'InvalidVersion')
-
-        info('Testing an invalid version.')
-        url = self.get_url(version=self.make_random_version())
-        self.test_url(connection, url, 404, 'InvalidVersion')
+        self.test_error(connection, 404, 'InvalidVersion', url=url)
 
         info('Testing an invalid format.')
         url = self.get_url(format='test')
-        self.test_url(connection, url, 404, 'InvalidFormat')
+        self.test_error(connection, 404, 'InvalidFormat', url=url)
