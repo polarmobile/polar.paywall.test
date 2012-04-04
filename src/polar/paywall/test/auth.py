@@ -51,8 +51,9 @@ class Auth(Subcommand):
             self.test_urls,
             self.test_headers,
             self.test_json,
-
-
+            self.test_device,
+            self.test_auth_params,
+            self.test_model,
             self.test_charset,
             self.test_success,
         ]
@@ -135,6 +136,101 @@ class Auth(Subcommand):
         info('Testing no body.')
         body = ''
         self.test_error(connection, 400, 'InvalidFormat', body=body)
+
+        info('Testing invalid body.')
+        body = 'test'
+        self.test_error(connection, 400, 'InvalidFormat', body=body)
+
+    def test_device(self, connection):
+        '''
+        Test responses to bad device values in the request.
+        '''
+        info('Testing no device.')
+        body = self.get_body()
+        del body['device']
+        self.test_error(connection, 400, 'InvalidDevice', body=body)
+
+        info('Testing invalid device.')
+        body = self.get_body()
+        body['device'] = 'test'
+        self.test_error(connection, 400, 'InvalidDevice', body=body)
+
+        info('Testing no manufacturer.')
+        body = self.get_body()
+        del body['device']['manufacturer']
+        self.test_error(connection, 400, 'InvalidDevice', body=body)
+
+        info('Testing invalid manufacturer.')
+        body = self.get_body()
+        body['device']['manufacturer'] = []
+        self.test_error(connection, 400, 'InvalidDevice', body=body)
+
+        info('Testing no model.')
+        body = self.get_body()
+        del body['device']['model']
+        self.test_error(connection, 400, 'InvalidDevice', body=body)
+
+        info('Testing invalid model.')
+        body = self.get_body()
+        body['device']['model'] = []
+        self.test_error(connection, 400, 'InvalidDevice', body=body)
+
+        info('Testing no os_version.')
+        body = self.get_body()
+        del body['device']['os_version']
+        self.test_error(connection, 400, 'InvalidDevice', body=body)
+
+        info('Testing invalid os_version.')
+        body = self.get_body()
+        body['device']['os_version'] = []
+        self.test_error(connection, 400, 'InvalidDevice', body=body)
+
+    def test_auth_params(self, connection):
+        '''
+        Test responses to bad auth params in the request.
+        '''
+        info('Testing no authParams.')
+        body = self.get_body()
+        del body['authParams']
+        self.test_error(connection, 400, 'InvalidAuthParams', body=body)
+
+        info('Testing invalid authParams.')
+        body = self.get_body()
+        body['authParams'] = []
+        self.test_error(connection, 400, 'InvalidAuthParams', body=body)
+
+        info('Testing invalid authParams parameters.')
+        body = self.get_body()
+        body['authParams'] = {self.random_id(): self.random_id()}
+        self.test_error(connection, 400, 'InvalidAuthParams', body=body)
+
+    def test_model(self, connection):
+        '''
+        Test responses to requests with valid formatting but invalid data.
+        '''
+        # We have to test if a valid user has authentication parameters since,
+        # strictly speaking, authParams are optional.
+        parameters = self.config.items('valid user')
+        if len(parameters) > 0:
+            for name, value in parameters:
+                info('Testing invalid authParams values for: %s.' % name)
+                body = self.get_body()
+                body['authParams'][name] = self.random_id()
+                code = 'InvalidPaywallCredentials'
+                self.test_error(connection, 401, code, body=body)
+
+        # If an invalid user is provided, we can test for an account problem.
+        parameters = self.config.items('invalid user')
+        if len(parameters) > 0:
+            info('Testing invalid user.')
+            url = self.get_url(user='invalid user')
+            body = self.get_body(user='invalid user')
+            code = 'AccountProblem'
+            self.test_error(connection, 401, code, url=url, body=body)
+
+        info('Testing invalid product.')
+        url = self.get_url(product=self.random_id())
+        self.test_error(connection, 404, 'InvalidProduct', url=url)
 
     def test_charset(self, connection):
         '''
