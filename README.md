@@ -108,7 +108,7 @@ The following tests are run on the auth entry point.
    * No header.
    * No token.
    * Token incorrect.
-  * Correct Value: PolarPaywallProxySessionv1.0.0 <product id>:<session id>
+  * Correct Value: PolarPaywallProxySessionv1.0.0 session:<session id>
   * resut = InvalidAuthScheme 400
 
 #### body ####
@@ -122,8 +122,14 @@ The following tests are run on the auth entry point.
 #### model ####
 
  * invalid account
+  * Cannot be tested.
+   * Invalid accounts cannot authenticate, so the test will never have a valid session id.
   * Expected Result: AccountProblem 403
+
+ * invalid product 
+  * Expected Result: InvalidProduct 404
 
  * expired session
   * Cannot be tested.
+   * Timeout values may be very long, so waiting isn't an option.
   * Expected Result: SessionExpired 401

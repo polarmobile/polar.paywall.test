@@ -200,7 +200,7 @@ class Auth(Subcommand):
             url = self.get_url(user='invalid user')
             body = self.get_body(user='invalid user')
             code = 'AccountProblem'
-            self.test_error(connection, 401, code, url=url, body=body)
+            self.test_error(connection, 403, code, url=url, body=body)
 
         info('Testing invalid product.')
         url = self.get_url(product=self.random_id())
