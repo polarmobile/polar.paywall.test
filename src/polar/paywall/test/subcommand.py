@@ -119,9 +119,9 @@ class Subcommand(object):
         if not version:
             version = self.config.get('server', 'version')
 
-        params = {'entry': entry, 'api': api, 'version': version,
-                  'format': format, 'product': product}
-        return '/{api}/{version}/{format}/{entry}/{product}'.format(**params)
+        # format wasn't used to keep compatability with Python 2.5.
+        params = (api, version, format, entry, product)
+        return '/%s/%s/%s/%s/%s' % params
 
     def check_response(self, body, schemas = ERROR_SCHEMAS):
         '''
