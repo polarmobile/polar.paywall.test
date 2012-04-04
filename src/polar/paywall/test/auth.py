@@ -49,8 +49,9 @@ class Auth(Subcommand):
 
         tests = [
             self.test_urls,
-            self.test_success,
             self.test_headers,
+            self.test_charset,
+            self.test_success,
         ]
 
         try:
@@ -123,6 +124,15 @@ class Auth(Subcommand):
         headers = self.get_headers()
         headers['Authorization'] = self.random_id()
         self.test_error(connection, 400, 'InvalidAuthScheme', headers=headers)
+
+    def test_charset(self, connection):
+        '''
+        Test authentication using non-ascii characters.
+        '''
+        info('Testing non-ascii characters.')
+        body = self.get_body()
+        body['device']['manufacturer'] = u'李刚'
+        self.request(connection, body=body, schemas=AUTH_SCHEMAS)
 
     def test_success(self, connection):
         '''

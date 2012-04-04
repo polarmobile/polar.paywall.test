@@ -146,7 +146,8 @@ class Subcommand(object):
             headers = self.get_headers()
 
         if not body:
-            body = dumps(self.get_body())
+            body = self.get_body()
+        body = dumps(body, ensure_ascii=False).encode('utf-8')
 
         # Make the request.
         connection.request('POST', url, body, headers)
