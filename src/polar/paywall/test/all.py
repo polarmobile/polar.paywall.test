@@ -26,10 +26,12 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+from logging import info
 
 from polar.paywall.test.subcommand import Subcommand
 
-from logging import info
+from polar.paywall.test.auth import Auth
+from polar.paywall.test.validate import Validate
 
 
 class All(Subcommand):
@@ -42,3 +44,12 @@ class All(Subcommand):
         Runs the full series of unit tests on auth.
         '''
         info('Running all publisher tests.')
+
+        tests = [
+            Auth(),
+            Validate(),
+        ]
+
+        for test in tests:
+            test.config = self.config
+            test.run(arguments)
