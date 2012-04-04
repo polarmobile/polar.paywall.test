@@ -44,9 +44,9 @@ from uuid import uuid4
 # Note that in python 2.5 and 2.6 the json module is called simplejson.
 # In Python 2.7 and onwards, json is used.
 try:
-    from json import dumps
+    from json import loads, dumps
 except ImportError:
-    from simplejson import dumps
+    from simplejson import loads, dumps
 
 from random import randint
 
