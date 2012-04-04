@@ -31,7 +31,7 @@ from polar.paywall.test.schemas import ERROR_SCHEMAS
 from httplib import HTTPSConnection, HTTPConnection
 
 from logging import (basicConfig, DEBUG, INFO, WARNING, ERROR, CRITICAL,
-    info, warning)
+    info, warning, error)
 
 from ConfigParser import ConfigParser
 
