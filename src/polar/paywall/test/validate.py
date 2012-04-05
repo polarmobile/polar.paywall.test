@@ -125,9 +125,7 @@ class Validate(Subcommand):
         url = self.get_url(product=self.random_id())
         self.test_error(connection, 404, 'InvalidProduct', url=url)
 
-        # Check to see if an invalid user is provided.
-        parameters = self.config.items('invalid user')
-        if len(parameters) > 0:
+        if self.config.has_section('invalid user'):
             # If an invalid user is provided, we can test a situation where one
             # user tries to use another users's session id.
             info('Testing session key copy attack.')

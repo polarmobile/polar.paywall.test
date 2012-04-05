@@ -31,7 +31,7 @@ TEMPLATE = '''
 [server]
 # Note that the pot number can be included in the address. The protocol should
 # not be specified.
-address = localhost
+address = localhost:8080
 # http and https are valid protocols.
 protocol = http
 # The version of the proxy api that the server implements.

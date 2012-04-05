@@ -182,20 +182,15 @@ class Auth(Subcommand):
         '''
         Test responses to requests with valid formatting but invalid data.
         '''
-        # We have to test if a valid user has authentication parameters since,
-        # strictly speaking, authParams are optional.
-        parameters = self.config.items('valid user')
-        if len(parameters) > 0:
-            for name, value in parameters:
-                info('Testing invalid authParams values for: %s.' % name)
-                body = self.get_body()
-                body['authParams'][name] = self.random_id()
-                code = 'InvalidPaywallCredentials'
-                self.test_error(connection, 401, code, body=body)
+        for name, value in self.config.items('valid user'):
+            info('Testing invalid authParams values for: %s.' % name)
+            body = self.get_body()
+            body['authParams'][name] = self.random_id()
+            code = 'InvalidPaywallCredentials'
+            self.test_error(connection, 401, code, body=body)
 
         # If an invalid user is provided, we can test for an account problem.
-        parameters = self.config.items('invalid user')
-        if len(parameters) > 0:
+        if self.config.has_section('invalid user'):
             info('Testing invalid user.')
             url = self.get_url(user='invalid user')
             body = self.get_body(user='invalid user')

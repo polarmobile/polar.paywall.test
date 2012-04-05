@@ -162,13 +162,13 @@ class Subcommand(object):
         Issue a request. If url, headers or body are None, then the default
         factory methods are used.
         '''
-        if url == None:
+        if url is None:
             url = self.get_url()
 
-        if headers == None:
+        if headers is None:
             headers = self.get_headers()
 
-        if body == None:
+        if body is None:
             body = self.get_body()
 
         # Encode the body using json. If a string is given, assume that it is
