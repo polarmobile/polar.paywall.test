@@ -29,7 +29,7 @@
 TEMPLATE = '''
 # Settings that identify the server you are testing.
 [server]
-# Note that the pot number can be included in the address. The protocol should
+# Note that the port number can be included in the address. The protocol should
 # not be specified.
 address = localhost:8080
 # http and https are valid protocols.
