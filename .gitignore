@@ -1,0 +1,16 @@
+*.pyc
+*.pyo
+*.swp
+.installed.cfg
+.coverage
+htmlcov
+bin
+build
+develop-eggs
+dist
+downloads
+eggs
+parts
+src/*.egg-info
+var
+/src/polar/paywall/proxy/settings.py
