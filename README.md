@@ -1,12 +1,12 @@
 # Polar Paywall Tester #
 
 This tool runs tests that will query a publisher's server and check for
-incompatibilities with the polar api.
+incompatibilities with the Polar Mobile Paywall API.
 
 ## Installation ##
 
-In order to use this tool you will first need to first install python2.5, 2.6
-or 2.7. You then need to install setuptools for your respective version of
+In order to use this tool you will first need to first install python 2.5, 2.6
+or 2.7. You will then need to install setuptools for your respective version of
 python.
 
 Once these packages are installed, run the setup.py command:
@@ -28,9 +28,9 @@ You will be able to call the utility directly on the command line.
 
 ## Usage ##
 
-Open a command terminal and be sure you can run the paywall.test script. When
-run directly, the script will print out help information. You must first
-configure the application before you run it.
+Open a command terminal and be sure you can run the paywall.test script. When run directly, the script will print out help information. 
+
+Note: You must first configure the application before you run it.
 
 ### Configuration ###
 
