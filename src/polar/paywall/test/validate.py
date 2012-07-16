@@ -35,7 +35,7 @@ from logging import info, error
 # Used to get a session key.
 from auth import Auth
 
-import socket
+from traceback import format_exc
 
 
 class Validate(Subcommand):
@@ -58,15 +58,16 @@ class Validate(Subcommand):
             self.test_success,
         ]
 
-        try:
-            # Get a session key to validate with.
-            self.session_key = self.get_session_key(connection)
+        # Get a session key to validate with.
+        self.session_key = self.get_session_key(connection)
 
-            for test in tests:
+        for test in tests:
+            try:
                 test(connection)
 
-        except socket.error:
-            error('Could not connect to server. Check your config.')
+            except Exception, exception:
+                error(format_exc())
+                error(exception)
 
         connection.close()
 

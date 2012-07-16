@@ -32,7 +32,7 @@ from polar.paywall.test.subcommand import Subcommand
 
 from logging import info, error
 
-import socket
+from traceback import format_exc
 
 
 class Auth(Subcommand):
@@ -58,12 +58,13 @@ class Auth(Subcommand):
             self.test_success,
         ]
 
-        try:
-            for test in tests:
+        for test in tests:
+            try:
                 test(connection)
 
-        except socket.error:
-            error('Could not connect to server. Check your config.')
+            except Exception, exception:
+                error(format_exc())
+                error(exception)
 
         connection.close()
 

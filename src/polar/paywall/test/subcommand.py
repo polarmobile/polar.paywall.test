@@ -176,6 +176,11 @@ class Subcommand(object):
         if not isinstance(body, unicode) and not isinstance(body, str):
             body = dumps(body, ensure_ascii=False).encode('utf-8')
 
+        # Unfortunately, without a body, python won't add a content length
+        # header. It has to be manually added.
+        if len(body) == 0:
+            headers['Content-Length'] = 0
+
         # Make the request.
         connection.request('POST', url, body, headers)
         response = connection.getresponse()
